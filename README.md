@@ -15,7 +15,7 @@ Here are some ideas to get you started:
 -->
 
 ## 🙋‍♀️自我介紹-網路爬蟲
-音樂成長經歷，以及誠品線上書局裡「晨羽」的書籍優惠清單
+音樂成長歷程，以及誠品線上書局裡「晨羽」的書籍優惠清單
 
 ## 💬頁面說明
 1. [成長自傳](https://panceline.github.io/Celinepan.github.io/index.html)
