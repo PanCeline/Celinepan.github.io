@@ -1,0 +1,218 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>潘欣妤 期末爬蟲報告</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<a href="index.html" class="logo">Homepage</a>
+					</header>
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul class="links">
+							<li><a href="index.html">成長自傳</a></li>
+							<li><a href="generic.html">個人經歷</a></li>
+							<li class="active"><a href="elements.html">網路爬蟲</a></li>
+						</ul>
+						<ul class="icons">
+							<li><a href="https://www.instagram.com/celine._.1017/" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<section class="post">
+								<header class="major">
+									<h1>爬蟲結果</h1>
+								</header>
+
+								<!-- Text stuff -->
+									<h2>爬取網頁</h2>
+									<p> 
+									<a href="https://www.eslite.com/">
+									誠品線上 - 閱讀與生活的無盡想像</a></p>
+									<hr />
+								<!-- Blockquote -->
+									<h2>結果說明</h2>
+									<blockquote>
+									透過自動化操作誠品書店網站，搜尋作者「<span><strong>晨羽</strong></span>」的書籍資料。<br/>
+									此程式是擷取網頁第一頁每本書的<span><strong>書名、折數與售價</strong></span>，並輸出形成完整的書籍優惠清單，
+									格式為 <span><strong>[書名 : 折數 $售價]。</strong></span></br>
+									最後再將成果存為 csv 檔。
+									</blockquote>
+									<hr />
+								<!-- Preformatted Code -->
+									<h2>程式碼說明</h2>
+									<h3> Step1 載入套件</h3>
+									<pre><code>from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+import time
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException
+</code></pre>
+
+<h3> Step2 設計函數爬取書籍資料</h3>
+<div id='A'>
+<div class="image main"><img src="images/pic021.jpg" alt="" /></div>
+<pre><code>def scrape_book_data():
+    time.sleep(1)
+    
+    # 抓取書名與價格
+    name_elements = driver.find_elements(By.CSS_SELECTOR, <span style='color:#d94343; font-weight:bold;'>".product-name"</span>)
+    price_elements = driver.find_elements(By.CSS_SELECTOR, <span style='color:#cc66a8; font-weight:bold;'>".async-price-utility"</span>)
+
+    for name_item, price_item in zip(name_elements, price_elements):
+        # 書名
+        book_element = name_item.find_element(By.TAG_NAME, <span style='color:#f58442; font-weight:bold;'>"span"</span>)
+        book = book_element.text
+        # 折扣
+        try:
+            discount_element = price_item.find_element(By.CSS_SELECTOR, <span style='color:#a764d1; font-weight:bold;'>".discount"</span>)
+            discount = discount_element.text
+        except:
+            discount = "無"
+        # 價錢
+        try:
+            price_element = price_item.find_element(By.CSS_SELECTOR, <span style='color:#a764d1; font-weight:bold;'>".slider-price"</span>)
+            price = price_element.text
+        except:
+            price = "無"
+
+        # 整合資訊
+        data_list.append({"書名": book,"打折": discount,"價錢": price})</code></pre>
+		
+			
+
+						<div id="main">
+							<section class="posts">
+								<article>
+									<header>
+										<h4>爬取書籍</h4>
+									</header>
+									<a href="#" class="image fit"><img src="images/pic022.jpg" alt="" /></a>
+									
+								</article>
+								<article>
+									<header>
+										<h4>爬取售價</h4>
+									</header>
+									<a href="#" class="image fit"><img src="images/pic023.jpg" alt="" /></a>
+									
+								</article>
+							</section>
+						</div>
+</div>
+
+</br>
+<h3> Step3 自動化，並存取所爬取的資料</h3>
+<div id='A'>
+<pre><code>options = webdriver.ChromeOptions()
+options.add_argument("--disable-blink-features=AutomationControlled")
+
+driver = webdriver.Chrome(
+    service=webdriver.chrome.service.Service(ChromeDriverManager().install()),
+    options=options
+)
+# 啟動瀏覽器
+driver.get("https://www.eslite.com/?srsltid=AfmBOooD70D5ck8xkuquE9ik9isT1D0zie9hjGjkKS_yRBqQ6kpt2WFB")
+driver.maximize_window()
+time.sleep(2)
+
+# 搜尋關鍵字
+search_box = driver.find_element(By.CLASS_NAME, "ec-form-control") 
+search_box.send_keys(<span><strong>"晨羽"</strong></span>) #輸入作者
+search_box.send_keys(Keys.ENTER)
+
+# 模擬滾動頁面
+for _ in range(2):
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(2)
+
+# 存放所有資料的列表
+data_list = []
+time.sleep(2)
+scrape_book_data()
+
+'''
+如要印出可使用此方式
+for i in range(20):
+    name = data_list[i]["書名"]
+    discount = data_list[i]["打折"]
+    price = data_list[i]["價錢"]
+    print(f"[書名 : {name} -> {discount}折 ${price}]")
+'''    
+
+driver.quit()</code></pre>
+</div>
+
+</br>
+<h3> Step4 將資料存為csv檔</h3>
+<div id='A'>
+<pre><code>import pandas as pd
+# 轉為 DataFrame 並輸出成 CSV
+df = pd.DataFrame(data_list)
+df.to_csv(r"C:\Users\pan10\OneDrive\誠品書局.csv", index=False, encoding="utf-8-sig")</code></pre>
+<h4> 成果展示 20筆</h4>
+<div class="image main"><img src="images/pic024.jpg" alt="" /></div>
+</div>
+
+							</section>
+							<ul class="actions special">
+								<li><a href="index.html" class="button">back</a></li>
+							</ul>
+
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<section class="split contact">
+							<section>
+								<h3>Email</h3>
+								<p><a href="#">s1120112@pu.edu.tw</a></p>
+							</section>
+							<section>
+								<h3>Social</h3>
+								<ul class="icons alt">
+									<li><a href="https://www.instagram.com/celine._.1017/" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a></li>
+								</ul>
+							</section>
+						</section>
+					</footer>
+
+				<!-- Copyright -->
+					<div id="copyright">
+						<ul><li>&copy; Untitled</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul>
+					</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
