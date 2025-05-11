@@ -17,7 +17,7 @@ Here are some ideas to get you started:
 ## 🌱自我介紹-網路爬蟲
 音樂成長經歷，以及誠品線上書局裡「晨羽」的書籍優惠清單
 
-## 💬功能說明
+## 💬頁面說明
 1. [成長自傳](https://panceline.github.io/Celinepan.github.io/index.html)
 2. [個人經歷](https://panceline.github.io/Celinepan.github.io/generic.html)
 3. [網路爬蟲](https://panceline.github.io/Celinepan.github.io/elements.html)
